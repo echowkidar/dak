@@ -15,7 +15,7 @@ function AddReceipt() {
   const [showAssistantDropdown, setShowAssistantDropdown] = useState(false);
   const [selectedAssistants, setSelectedAssistants] = useState<string[]>([]);
   const [isOtherDocType, setIsOtherDocType] = useState(false);
-
+  const [documentPreview, setDocumentPreview] = useState<string | null>(null);
 
   const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
 
@@ -83,6 +83,15 @@ const handleDocTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
 
   
 //
+
+useEffect(() => {
+  return () => {
+    if (documentPreview) {
+      URL.revokeObjectURL(documentPreview);
+    }
+  };
+}, [documentPreview]);
+
 
 useEffect(() => {
   async function fetchDepartments() {
@@ -359,8 +368,25 @@ useEffect(() => {
               type="file"
               accept="image/*"
               {...register('document_image')}
-              className="mt-1 block w-full"
-            />
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  setDocumentPreview(URL.createObjectURL(file)); // Generate preview URL
+                } else {
+                  setDocumentPreview(null); // Clear preview if no file selected
+                }
+              }}
+              className="mt-1 block w-full"/>
+              {documentPreview && (
+              <div className="mt-2">
+                <label className="block text-sm font-medium text-gray-700">Preview</label>
+                <img
+                  src={documentPreview}
+                  alt="Document Thumbnail"
+                  className="mt-1 w-40 h-40 object-cover border border-gray-300 rounded-md"
+                />
+              </div>
+            )}
           </div>
           <div className="sm:col-span-2">
             <label className="block text-sm font-medium text-gray-700">Remarks</label>

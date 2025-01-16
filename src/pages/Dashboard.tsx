@@ -17,6 +17,7 @@ function Dashboard() {
   const recentDocuments = [...(receiptsList || []), ...(dispatchesList || [])]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 150);
+console.log("log",recentDocuments);
 
   return (
     <div className="space-y-6">
@@ -82,13 +83,18 @@ function Dashboard() {
                   <Clock className="h-4 w-4 mr-1" />
                   {new Date(doc.date).toLocaleDateString("en-IN")}
                 </div>
-            
-                {/* Third Div: Subject */}
-                <div className="flex items-center w-full sm:w-4/5">
+                {/* Third Div: Department (25% width) */}
+                <div className="flex items-center w-full sm:w-1/10 text-sm font-medium text-gray-900 text-left truncate">
+                    {/* Assuming a 'department' property exists in 'doc' */}
+                    {doc.department_name ? doc.department_name : doc.department_name || "N/A"}
+                  </div>
+                {/* Fourth Div: Subject */}
+                <div className="flex items-center w-full sm:w-3/5">
                   <p className="text-sm font-medium text-gray-900 text-left truncate">
                     {doc.subject}
                   </p>
                 </div>
+                
               </div>
             </li>
             ))}
