@@ -215,31 +215,3 @@ export const dispatches = {
 };
 
 
-api.interceptors.response.use(
-  response => response,
-  async (error) => {
-    const originalRequest = error.config;
-
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-
-      try {
-        const refreshToken = localStorage.getItem('refresh_token');
-        const response = await axios.post('http://10.0.93.196:3000/api/auth/refresh', { token: refreshToken });
-        const newToken = response.data.token;
-
-        localStorage.setItem('token', newToken);
-        api.defaults.headers.Authorization = `Bearer ${newToken}`;
-        originalRequest.headers.Authorization = `Bearer ${newToken}`;
-
-        return api(originalRequest);
-      } catch (refreshError) {
-        console.error('Token refresh failed:', refreshError);
-        localStorage.clear();
-        // Redirect to login or handle logout
-      }
-    }
-
-    return Promise.reject(error);
-  }
-);
