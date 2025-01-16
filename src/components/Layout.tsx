@@ -28,7 +28,7 @@ function Layout() {
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('expirationTime');
-    window.location.href = '/login';
+    window.location.href = '/';
   };
 
   const formatTime = (seconds) => {
